@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Telegram-бот, который каждые 6 часов собирает свежие AI/ML новости из RSS-лент, генерирует краткое резюме на русском через Claude API и постит в Telegram-канал. Запускается через GitHub Actions — постоянного сервера не требуется.
+Telegram-бот, который каждые 6 часов собирает свежие AI/ML новости из RSS-лент, генерирует краткое резюме на русском через OpenRouter (модель GLM 5.2) и постит в Telegram-канал. Запускается через GitHub Actions — постоянного сервера не требуется.
 
 ## Architecture
 
@@ -12,7 +12,7 @@ Telegram-бот, который каждые 6 часов собирает св�
 main.py               # Точка входа: оркестрирует fetch → summarize → post
 bot/
   fetcher.py          # Парсит RSS-ленты, фильтрует по времени, дедуплицирует
-  summarizer.py       # Вызывает Claude API, возвращает HTML-форматированное сообщение
+  summarizer.py       # Вызывает OpenRouter API (GLM 5.2), возвращает HTML-форматированное сообщение
   poster.py           # Отправляет сообщение в канал через Telegram Bot API (HTTP)
 config/
   sources.yaml        # Список RSS-лент: url + name
@@ -26,7 +26,7 @@ data/
 **Поток данных:**
 1. `fetcher.py` тянет все RSS-ленты из `sources.yaml`, фильтрует статьи новее 7 часов
 2. `main.py` исключает URL из `sent_articles.json` и берёт не более 5 статей
-3. `summarizer.py` отправляет заголовок + описание в Claude, получает 2-3 предложения на русском
+3. `summarizer.py` отправляет заголовок + описание в OpenRouter, получает 2-3 предложения на русском
 4. `poster.py` постит HTML-сообщение в канал
 5. `main.py` сохраняет новые URL в `sent_articles.json`
 6. GitHub Actions коммитит обновлённый `sent_articles.json` обратно в репозиторий (`[skip ci]` предотвращает рекурсию)
@@ -49,7 +49,7 @@ python main.py
 Секреты хранятся в `.env` локально и в GitHub Secrets для Actions:
 - `TELEGRAM_BOT_TOKEN` — токен от @BotFather
 - `TELEGRAM_CHANNEL_ID` — `@username` канала или числовой ID вида `-100...`
-- `ANTHROPIC_API_KEY` — ключ Anthropic API
+- `OPENROUTER_API_KEY` — ключ OpenRouter API
 
 RSS-ленты добавляются/удаляются в `config/sources.yaml` — формат: `url` + `name`.
 

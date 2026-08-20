@@ -1,8 +1,10 @@
+import os
 import re
 
-from anthropic import Anthropic
+import requests
 
-client = Anthropic()
+_OPENROUTER_API = "https://openrouter.ai/api/v1"
+_MODEL = "z-ai/glm-5.2"
 
 SYSTEM_PROMPT = (
     "Ты — редактор новостного Telegram-канала об AI и технологиях. "
@@ -28,13 +30,24 @@ def summarize_article(article: dict) -> str:
     else:
         user_content = f"Заголовок: {title}"
 
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=300,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": user_content}],
+    response = requests.post(
+        f"{_OPENROUTER_API}/chat/completions",
+        headers={
+            "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": _MODEL,
+            "max_tokens": 300,
+            "messages": [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_content},
+            ],
+        },
+        timeout=90,
     )
-    summary = response.content[0].text.strip()
+    response.raise_for_status()
+    summary = response.json()["choices"][0]["message"]["content"].strip()
 
     return (
         f"<b>{title}</b>\n\n"
