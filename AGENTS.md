@@ -27,4 +27,5 @@ There is **no test suite, linter, or typecheck config** in this repo. Do not inv
 - `bot/summarizer.py` — model `z-ai/glm-5.2` on OpenRouter is hardcoded here (`summarizer.py:7`), reasoning disabled via `{"reasoning": {"effort": "none"}}`; renders the HTML message (Russian title in `<b>`, "Читать далее →" link, source).
 - `bot/poster.py` — raw `requests` to Telegram Bot API (`sendMessage`).
 - RSS sources live in `config/sources.yaml` under the top-level `feeds:` key (`url` + `name`).
+- **`config/topics.yaml`** — top-level `topics:` list; each topic has `name`, `count` (how many articles per run), and `keywords` (substring match on title/description/source, case-insensitive; empty `keywords` matches everything). An article is posted only once, for the first topic that matches it.
 - Workflow `.github/workflows/news_bot.yml` runs daily at 03:00 UTC (10:00 Novosibirsk) on Python 3.12, then commits `data/sent_articles.json` back. Manual trigger via `workflow_dispatch`.

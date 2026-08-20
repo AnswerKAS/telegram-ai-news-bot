@@ -1,0 +1,40 @@
+topics:
+  - name: "LLM и нейросети"
+    count: 2
+    keywords:
+      - "LLM"
+      - "GPT"
+      - "Claude"
+      - "Gemini"
+      - "neural network"
+      - "нейросет"
+      - "large language model"
+      - "Harness"
+      - "OpenCode"
+      - "DeepSeek"
+
+  - name: "Регулирование ИИ и право"
+    count: 1
+    keywords:
+      - "regulat"
+      - "AI Act"
+      - "EU AI"
+      - "compliance"
+      - "governance"
+      - "закон"
+      - "регулирован"
+      - "нарушен"
+
+  - name: "Робототехника"
+    count: 1
+    keywords:
+      - "robot"
+      - "robotics"
+      - "робот"
+
+  - name: "Автономный транспорт"
+    count: 1
+    keywords:
+      - "self-driving"
+      - "autonomous vehicle"
+      - "беспилотн"
