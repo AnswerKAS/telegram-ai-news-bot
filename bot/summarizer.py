@@ -8,10 +8,13 @@ _MODEL = "z-ai/glm-5.2"
 
 SYSTEM_PROMPT = (
     "Ты — редактор новостного Telegram-канала об AI и технологиях. "
-    "Кратко перескажи новость на русском языке в 2-3 предложения. "
+    "Переведи заголовок новости на русский язык и кратко перескажи новость в 2-3 предложения. "
+    "Формат ответа строго такой:\n"
+    "Первая строка: заголовок на русском языке.\n"
+    "Вторая строка: пустая.\n"
+    "Далее: резюме на русском.\n"
     "Пиши сжато и информативно. "
-    "Не начинай с «Эта статья», «В данной статье» или вводных фраз. "
-    "Отвечай ТОЛЬКО текстом резюме."
+    "Не начинай резюме с «Эта статья», «В данной статье» или вводных фраз."
 )
 
 
@@ -39,6 +42,7 @@ def summarize_article(article: dict) -> str:
         json={
             "model": _MODEL,
             "max_tokens": 300,
+            "reasoning": {"effort": "none"},
             "messages": [
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": user_content},
@@ -47,10 +51,21 @@ def summarize_article(article: dict) -> str:
         timeout=90,
     )
     response.raise_for_status()
-    summary = response.json()["choices"][0]["message"]["content"].strip()
+    message = response.json()["choices"][0]["message"]
+    content = message.get("content") or message.get("reasoning")
+    if isinstance(content, list):
+        content = " ".join(
+            part.get("text", "") for part in content if isinstance(part, dict)
+        ).strip()
+    if not content:
+        raise RuntimeError("OpenRouter вернул пустой ответ без content и reasoning")
+    summary = content.strip()
+    lines = summary.split("\n", 1)
+    russian_title = lines[0].strip()
+    body = lines[1].strip() if len(lines) > 1 else summary
 
     return (
-        f"<b>{title}</b>\n\n"
-        f"{summary}\n\n"
+        f"<b>{russian_title}</b>\n\n"
+        f"{body}\n\n"
         f'<a href="{url}">Читать далее →</a>  |  📡 {source}'
     )

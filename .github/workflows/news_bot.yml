@@ -2,7 +2,7 @@ name: AI News Bot
 
 on:
   schedule:
-    - cron: "0 */6 * * *"   # каждые 6 часов: 00:00, 06:00, 12:00, 18:00 UTC
+    - cron: "0 3 * * *"     # раз в день в 10:00 по Новосибирску (UTC+7) = 03:00 UTC
   workflow_dispatch:          # ручной запуск из GitHub UI
 
 permissions:
