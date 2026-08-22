@@ -4,14 +4,23 @@ topics:
     keywords:
       - "LLM"
       - "GPT"
+      - "ChatGPT"
       - "Claude"
+      - "Anthropic"
       - "Gemini"
+      - "OpenAI"
+      - "DeepSeek"
+      - "Mistral"
+      - "Llama"
       - "neural network"
       - "нейросет"
       - "large language model"
+      - "foundation model"
+      - "language model"
+      - "reasoning"
+      - "inference"
       - "Harness"
       - "OpenCode"
-      - "DeepSeek"
 
   - name: "Регулирование ИИ и право"
     count: 1
@@ -21,6 +30,15 @@ topics:
       - "EU AI"
       - "compliance"
       - "governance"
+      - "bill"
+      - "law"
+      - "legal"
+      - "legislat"
+      - "policy"
+      - "safety"
+      - "copyright"
+      - "lawsuit"
+      - " FTC"
       - "закон"
       - "регулирован"
       - "нарушен"
@@ -30,6 +48,7 @@ topics:
     keywords:
       - "robot"
       - "robotics"
+      - "humanoid"
       - "робот"
 
   - name: "Автономный транспорт"
@@ -37,4 +56,11 @@ topics:
     keywords:
       - "self-driving"
       - "autonomous vehicle"
+      - "Waymo"
+      - "Tesla"
+      - "robotaxi"
       - "беспилотн"
+
+  - name: "Другие AI-новости"
+    count: 2
+    keywords: []

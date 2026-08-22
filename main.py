@@ -82,6 +82,7 @@ def main() -> None:
     sent_urls_set = set(sent_urls)
 
     articles = fetch_all_articles(feeds, hours_back=HOURS_BACK)
+    print(f"Fetched {len(articles)} articles (HOURS_BACK={HOURS_BACK})")
 
     if not topics:
         print("No topics configured in config/topics.yaml.")
