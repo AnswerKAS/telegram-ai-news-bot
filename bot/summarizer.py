@@ -1,3 +1,4 @@
+import html
 import os
 import re
 
@@ -65,7 +66,7 @@ def summarize_article(article: dict) -> str:
     body = lines[1].strip() if len(lines) > 1 else summary
 
     return (
-        f"<b>{russian_title}</b>\n\n"
-        f"{body}\n\n"
-        f'<a href="{url}">Читать далее →</a>  |  📡 {source}'
+        f"<b>{html.escape(russian_title)}</b>\n\n"
+        f"{html.escape(body)}\n\n"
+        f'<a href="{html.escape(url, quote=True)}">Читать далее →</a>  |  📡 {html.escape(source)}'
     )

@@ -19,15 +19,15 @@ MAX_SENT_HISTORY = 2000
 TOPICS_FILE = Path("config/topics.yaml")
 
 
-def load_sent_urls() -> set[str]:
+def load_sent_urls() -> list[str]:
     if SENT_ARTICLES_FILE.exists():
-        return set(json.loads(SENT_ARTICLES_FILE.read_text(encoding="utf-8")))
-    return set()
+        return json.loads(SENT_ARTICLES_FILE.read_text(encoding="utf-8"))
+    return []
 
 
-def save_sent_urls(urls: set[str]) -> None:
+def save_sent_urls(urls: list[str]) -> None:
     SENT_ARTICLES_FILE.parent.mkdir(exist_ok=True)
-    trimmed = list(urls)[-MAX_SENT_HISTORY:]
+    trimmed = urls[-MAX_SENT_HISTORY:]
     SENT_ARTICLES_FILE.write_text(
         json.dumps(trimmed, ensure_ascii=False, indent=2), encoding="utf-8"
     )
@@ -79,6 +79,7 @@ def main() -> None:
     feeds = sources_config["feeds"]
     topics = topics_config["topics"]
     sent_urls = load_sent_urls()
+    sent_urls_set = set(sent_urls)
 
     articles = fetch_all_articles(feeds, hours_back=HOURS_BACK)
 
@@ -86,7 +87,7 @@ def main() -> None:
         print("No topics configured in config/topics.yaml.")
         return
 
-    to_post = pick_for_topics(articles, topics, sent_urls)
+    to_post = pick_for_topics(articles, topics, sent_urls_set)
 
     if not to_post:
         print("No new articles for the configured topics.")
@@ -98,13 +99,13 @@ def main() -> None:
         try:
             message = summarize_article(article)
             post_to_channel(message)
-            sent_urls.add(article["url"])
+            sent_urls.append(article["url"])
             time.sleep(3)
         except Exception as e:
             print(f"Error processing {article['url']}: {e}")
 
     save_sent_urls(sent_urls)
-    print(f"Done. Total sent history: {len(sent_urls)}")
+    print(f"Done. Total sent history: {len(sent_urls[-MAX_SENT_HISTORY:])}")
 
 
 if __name__ == "__main__":
